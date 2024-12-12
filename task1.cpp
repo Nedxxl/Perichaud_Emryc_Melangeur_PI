@@ -87,7 +87,6 @@ void TTask1::task(void)
 					trameMoteur[3] = 'A';
 					trameMoteur[4] = '>';
 					com1->sendTx(trameMoteur, 5);
-					mqtt->publish(NULL, "RAM/melangeur/etats/motA", 2, "on", 0, false);
 				}
 				else
 				{
@@ -97,7 +96,6 @@ void TTask1::task(void)
 					trameMoteur[3] = 'A';
 					trameMoteur[4] = '>';
 					com1->sendTx(trameMoteur, 5);
-					mqtt->publish(NULL, "RAM/melangeur/etats/motA", 3, "off", 0, false);
 				}
 			}
 			if (changeB)
@@ -111,7 +109,6 @@ void TTask1::task(void)
 					trameMoteur[3] = 'B';
 					trameMoteur[4] = '>';
 					com1->sendTx(trameMoteur, 5);
-					mqtt->publish(NULL, "RAM/melangeur/etats/motB", 2, "on", 0, false);
 				}
 				else
 				{
@@ -121,7 +118,6 @@ void TTask1::task(void)
 					trameMoteur[3] = 'B';
 					trameMoteur[4] = '>';
 					com1->sendTx(trameMoteur, 5);
-					mqtt->publish(NULL, "RAM/melangeur/etats/motB", 3, "off", 0, false);
 				}
 			}
 			if (changeC)
@@ -135,7 +131,6 @@ void TTask1::task(void)
 					trameMoteur[3] = 'C';
 					trameMoteur[4] = '>';
 					com1->sendTx(trameMoteur, 5);
-					mqtt->publish(NULL, "RAM/melangeur/etats/motC", 2, "on", 0, false);
 				}
 				else
 				{
@@ -145,7 +140,6 @@ void TTask1::task(void)
 					trameMoteur[3] = 'C';
 					trameMoteur[4] = '>';
 					com1->sendTx(trameMoteur, 5);
-					mqtt->publish(NULL, "RAM/melangeur/etats/motC", 3, "off", 0, false);
 				}
 			}
 		}
@@ -176,7 +170,6 @@ void TTask1::task(void)
 							changeA = true;
 							com1->sendTx(marcheA, 5);
 							sleep(1);
-							mqtt->publish(NULL, "RAM/melangeur/etats/motA", 2, "on", 0, false);
 						}
 						poidAreel = poids - poidsStart;
 						mqtt->publish(NULL, "RAM/balance/etats/poidsA", sizeof(poidAreel), std::to_string(poidAreel).c_str(), 0, false);
@@ -187,7 +180,6 @@ void TTask1::task(void)
 						changeA = false;
 						com1->sendTx(stopA, 5);
 						sleep(1);
-						mqtt->publish(NULL, "RAM/melangeur/etats/motA", 3, "off", 0, false);
 
 						poidAreel = poids - poidsStart;
 						mqtt->publish(NULL, "RAM/balance/etats/poidsA", sizeof(poidAreel), std::to_string(poidAreel).c_str(), 0, false);
@@ -202,7 +194,6 @@ void TTask1::task(void)
 							changeB = true;
 							com1->sendTx(marcheB, 5);
 							sleep(1);
-							mqtt->publish(NULL, "RAM/melangeur/etats/motB", 2, "on", 0, false);
 						}
 						poidBreel = poids - (poidsStart + poidAreel);
 						mqtt->publish(NULL, "RAM/balance/etats/poidsB", sizeof(poidBreel), std::to_string(poidBreel).c_str(), 0, false);
@@ -213,7 +204,6 @@ void TTask1::task(void)
 						changeB = false;
 						com1->sendTx(stopB, 5);
 						sleep(1);
-						mqtt->publish(NULL, "RAM/melangeur/etats/motB", 3, "off", 0, false);
 
 						poidBreel = poids - (poidsStart + poidAreel);
 						mqtt->publish(NULL, "RAM/balance/etats/poidsB", sizeof(poidBreel), std::to_string(poidBreel).c_str(), 0, false);
@@ -228,7 +218,6 @@ void TTask1::task(void)
 							changeC = true;
 							com1->sendTx(marcheC, 5);
 							sleep(1);
-							mqtt->publish(NULL, "RAM/melangeur/etats/motC", 2, "on", 0, false);
 						}
 						poidCreel = poids - (poidsStart + poidAreel + poidBreel);
 						mqtt->publish(NULL, "RAM/balance/etats/poidsC", sizeof(poidCreel), std::to_string(poidCreel).c_str(), 0, false);
@@ -239,7 +228,6 @@ void TTask1::task(void)
 						changeC = false;
 						com1->sendTx(stopC, 5);
 						sleep(1);
-						mqtt->publish(NULL, "RAM/melangeur/etats/motC", 3, "off", 0, false);
 
 						poidCreel = poids - (poidsStart + poidAreel + poidBreel);
 						mqtt->publish(NULL, "RAM/balance/etats/poidsC", sizeof(poidCreel), std::to_string(poidCreel).c_str(), 0, false);
@@ -264,19 +252,40 @@ void TTask1::task(void)
 					stop = false;
 					com1->sendTx(stopA, 5);
 					sleep(1);
-					mqtt->publish(NULL, "RAM/melangeur/etats/motA", 3, "off", 0, false);
+
 					com1->sendTx(stopB, 5);
 					sleep(1);
-					mqtt->publish(NULL, "RAM/melangeur/etats/motB", 3, "off", 0, false);
+
 					com1->sendTx(stopC, 5);
 					sleep(1);
-					mqtt->publish(NULL, "RAM/melangeur/etats/motC", 3, "off", 0, false);
+
 					changeA = false;
 					changeB = false;
 					changeC = false;
 					vis = 0;
 				}
 			}
+		}
+
+		if (partage->isChangeEtat('A'))
+		{
+			const char *etatA = partage->getEtat('A') ? "on" : "off";
+			mqtt->publish(NULL, "RAM/melangeur/etats/motA", strlen(etatA), etatA, 0, false);
+			screen->dispStr(1, 15, etatA);
+		}
+
+		if (partage->isChangeEtat('B'))
+		{
+			const char *etatB = partage->getEtat('B') ? "on" : "off";
+			mqtt->publish(NULL, "RAM/melangeur/etats/motB", strlen(etatB), etatB, 0, false);
+			screen->dispStr(1, 16, etatB);
+		}
+
+		if (partage->isChangeEtat('C'))
+		{
+			const char *etatC = partage->getEtat('C') ? "on" : "off";
+			mqtt->publish(NULL, "RAM/melangeur/etats/motC", strlen(etatC), etatC, 0, false);
+			screen->dispStr(1, 17, etatC);
 		}
 
 		if (mqtt->loop(100) != 0)

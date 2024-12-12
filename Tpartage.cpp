@@ -256,8 +256,8 @@ bool TPartage::isChange(char moteur)
 
 bool TPartage::isChangeEtat(char moteur)
 {
-    mutex.take();
     bool ret = false;
+    mutex.take();
 
     switch (moteur)
     {
