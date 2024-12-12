@@ -237,6 +237,7 @@ void TTask1::task(void)
 					break;
 
 				default:
+					partage->removeRecette();
 					partage->setRecetteAuto(false);
 					mqtt->publish(NULL, "RAM/melangeur/etats/recetteStatut", 8, "FINISHED", 0, false);
 					break;

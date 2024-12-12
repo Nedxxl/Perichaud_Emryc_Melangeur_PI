@@ -129,15 +129,21 @@ void TMqtt::poidBalance(string val)
 void TMqtt::recetteAuto(string val)
 {
 	if (val == "go")
+	{
+		TPartage::recette_t recette = partage->getRecetteValue();
+		partage->setPoid('A', recette.poidA);
+		partage->setPoid('B', recette.poidB);
+		partage->setPoid('C', recette.poidC);
+
 		partage->setRecetteAuto(1);
+	}
 	else if (val == "stop")
-		partage->setRecetteAuto(0);
-	else if (val == "flush")
 	{
 		partage->setRecetteAuto(0);
-		partage->setPoid('A', 0);
-		partage->setPoid('B', 0);
-		partage->setPoid('C', 0);
+	}
+	else if (val == "flush")
+	{
+		partage->removeRecette();
 	}
 }
 
@@ -152,9 +158,7 @@ void TMqtt::recetteValue(string val)
 		ptr = strtok(NULL, "-");
 		i++;
 	}
-	partage->setPoid('A', atoi(valRecived[0]));
-	partage->setPoid('B', atoi(valRecived[1]));
-	partage->setPoid('C', atoi(valRecived[2]));
+	partage->addRecette(atoi(valRecived[0]), atoi(valRecived[1]), atoi(valRecived[2]));
 }
 
 string TMqtt::getMqttConfig(string nameFichierConfig)

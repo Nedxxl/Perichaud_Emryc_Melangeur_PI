@@ -6,10 +6,18 @@
 #include "sem.hpp"
 #include <stdint.h>
 #include <string.h>
+#include <deque>
 
 class TPartage : public TSingleton<TPartage>
 {
     friend class TSingleton<TPartage>;
+public:
+    struct recette_t
+    {
+        int poidA;
+        int poidB;
+        int poidC;
+    };
 
 private:
     bool moteurA;
@@ -35,6 +43,10 @@ private:
     bool recetteAutoChange;
     bool recetteValueChange;
 
+    std::deque<recette_t> recetteVal;
+
+
+
 public:
     TMutex mutex;
 
@@ -47,6 +59,8 @@ public:
     void setPoidBalance(double poid);
     void setRecetteAuto(bool val);
     void setPoid(char vis, int poids);
+    void addRecette(int poidA, int poidB, int poidC);
+    void removeRecette();
 
     bool getMoteur(char moteur);
     bool getMode();
@@ -54,6 +68,7 @@ public:
     double getPoidBalance();
     bool getRecetteAuto();
     int getPoid(char vis);
+    recette_t getRecetteValue();
 
     bool isChange(char moteur);
     bool isChangeEtat(char moteur);

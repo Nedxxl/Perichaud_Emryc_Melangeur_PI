@@ -122,6 +122,46 @@ void TPartage::setPoid(char vis, int poids)
     mutex.release();
 }
 
+void TPartage::addRecette(int poidA, int poidB, int poidC)
+{
+    if (recetteVal.size() > 10)
+    {
+        return;
+    }
+    
+    recette_t recette;
+    recette.poidA = poidA;
+    recette.poidB = poidB;
+    recette.poidC = poidC;
+
+    mutex.take();
+    recetteVal.push_back(recette);
+    mutex.release();
+}
+
+void TPartage::removeRecette()
+{
+    if(recetteVal.empty())
+    {
+        return;
+    }
+    mutex.take();
+    recetteVal.pop_front();
+    mutex.release();
+}
+
+TPartage::recette_t TPartage::getRecetteValue()
+{
+    mutex.take();
+    recette_t recette;
+    if (!recetteVal.empty())
+    {
+        recette = recetteVal.front();
+    }
+    mutex.release();
+    return recette;
+}
+
 bool TPartage::getMoteur(char moteur)
 {
     mutex.take();
