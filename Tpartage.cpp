@@ -86,8 +86,8 @@ void TPartage::setEtat(char moteur, bool val)
 void TPartage::setPoidBalance(double poid)
 {
     mutex.take();
-        poidBalance = poid;
-        poidBalanceChange = true;
+    poidBalance = poid;
+    poidBalanceChange = true;
     mutex.release();
 }
 
@@ -128,7 +128,7 @@ void TPartage::addRecette(int poidA, int poidB, int poidC)
     {
         return;
     }
-    
+
     recette_t recette;
     recette.poidA = poidA;
     recette.poidB = poidB;
@@ -141,7 +141,7 @@ void TPartage::addRecette(int poidA, int poidB, int poidC)
 
 void TPartage::removeRecette()
 {
-    if(recetteVal.empty())
+    if (recetteVal.empty())
     {
         return;
     }
@@ -152,8 +152,9 @@ void TPartage::removeRecette()
 
 TPartage::recette_t TPartage::getRecetteValue()
 {
+    recette_t recette = {0, 0, 0};
     mutex.take();
-    recette_t recette;
+
     if (!recetteVal.empty())
     {
         recette = recetteVal.front();

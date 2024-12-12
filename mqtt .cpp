@@ -144,6 +144,7 @@ void TMqtt::recetteAuto(string val)
 	else if (val == "flush")
 	{
 		partage->removeRecette();
+		partage->setRecetteAuto(0);
 	}
 }
 
