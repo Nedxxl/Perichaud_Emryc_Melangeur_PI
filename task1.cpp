@@ -148,6 +148,7 @@ void TTask1::task(void)
 			recetteGo = partage->getRecetteAuto();
 			if (recetteGo)
 			{
+				stop = true;
 				if (partage->isChangeRecetteValue())
 				{
 					poidsStart = (partage->getPoidBalance() * 1000);
@@ -236,7 +237,6 @@ void TTask1::task(void)
 					break;
 
 				default:
-					stop = true;
 					partage->setRecetteAuto(false);
 					mqtt->publish(NULL, "RAM/melangeur/etats/recetteStatut", 8, "FINISHED", 0, false);
 					break;
@@ -263,6 +263,7 @@ void TTask1::task(void)
 					changeB = false;
 					changeC = false;
 					vis = 0;
+					mqtt->publish(NULL, "RAM/melangeur/etats/recetteStatut", 8, "FINISHED", 0, false);
 				}
 			}
 		}

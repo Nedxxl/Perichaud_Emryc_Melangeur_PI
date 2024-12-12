@@ -143,7 +143,7 @@ void TMqtt::recetteAuto(string val)
 
 void TMqtt::recetteValue(string val)
 {
-	char valRecived[3][10];
+	char valRecived[3][4];
 	int i = 0;
 	char *ptr = strtok((char *)val.c_str(), "-");
 	while ((ptr != NULL) && (i < 4))
